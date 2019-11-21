@@ -8,6 +8,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     //implementation(Deps.kotlin_coroutines)
 
+    implementation(Deps.moshi_kotlin)
+
     //testImplementation(Deps.kotlin_test)
 }
 
