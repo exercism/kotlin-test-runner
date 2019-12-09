@@ -8,7 +8,12 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     //implementation(Deps.kotlin_coroutines)
 
+    //implementation(Deps.clikt)
     implementation(Deps.moshi_kotlin)
+
+    implementation(Deps.jupiter_engine)
+    implementation(Deps.jupiter_launcher)
+    implementation(Deps.junit4)
 
     //testImplementation(Deps.kotlin_test)
 }
