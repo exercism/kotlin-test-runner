@@ -4,7 +4,7 @@ import java.io.File
 import java.lang.ProcessBuilder.Redirect
 import java.nio.file.Files
 
-fun executor(env: Environment) {
+fun executor(env: Environment): ExecutionResult {
     // Copy project skeleton from references
     env.templateDir.copyRecursively(env.workingDir)
     env.workingDir.resolve("gradlew").setExecutable(true)
@@ -30,12 +30,15 @@ fun executor(env: Environment) {
         }
 
     // Run tests
-    executeTests(env.workingDir)
+    val exitCode = executeTests(env.workingDir)
 
     // Prepare report
+    return parseTestResults(exitCode)
 }
 
-private fun executeTests(workingDir: File) {
+typealias ExitCode = Int
+
+private fun executeTests(workingDir: File): ExitCode {
     println("Running gradle")
 
     val process = ProcessBuilder("./gradlew", "test")
@@ -44,8 +47,17 @@ private fun executeTests(workingDir: File) {
         .redirectError(Redirect.INHERIT)
         .start()
 
-    val exitValue = process.waitFor()
+    val exitCode = process.waitFor()
 
-    if (exitValue == 0) println("Success")
+    if (exitCode == 0) println("Success")
     else println("Fail")
+
+    return exitCode
+}
+
+private fun parseTestResults(exitCode: ExitCode): ExecutionResult {
+    return when (exitCode) {
+        0 -> ExecutionResult.Success
+        else -> ExecutionResult.Fail
+    }
 }

@@ -2,10 +2,12 @@ package executor
 
 import java.io.File
 
-fun executeOnEnvironment(config: RuntimeConfiguration, executor: (Environment) -> Unit) {
+fun executeOnEnvironment(config: RuntimeConfiguration, executor: (Environment) -> ExecutionResult): ExecutionResult {
     val env = setupEnvironment(config)
-    executor(env)
+    val result = executor(env)
     env.tearDown(config)
+
+    return result
 }
 
 private fun setupEnvironment(config: RuntimeConfiguration): Environment {

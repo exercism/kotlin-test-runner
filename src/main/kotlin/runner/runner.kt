@@ -1,6 +1,6 @@
 package runner
 
-import executor.RuntimeConfiguration
+import executor.ExecutionResult
 import executor.executeOnEnvironment
 import executor.executor
 import java.io.File
@@ -11,36 +11,10 @@ private val DEBUG = object {
 
 fun main(arguments: Array<String>) {
     val args = parseAndValidate(arguments)
+    val config = buildRuntimeConfigFrom(args)
 
-    val exercismRepo = File("../exercism-kotlin")
-
-    val selectedExerciseDir = exercismRepo
-        .resolve("exercises")
-        .resolve(args.exerciseSlug)
-    with(selectedExerciseDir) {
-        check(exists()) { "Exercise directory '$absolutePath' not found" }
-        check(isDirectory) { "Exercise directory '$absolutePath' is a file" }
-    }
-
-    val config = buildRuntimeConfig(
-        exerciseDir = selectedExerciseDir,
-        solutionsDir = args.solutionsDir,
-        templateDir = exercismRepo.resolve("_template")
-    )
-    executeOnEnvironment(config, ::executor)
-}
-
-private fun buildRuntimeConfig(exerciseDir: File, solutionsDir: File, templateDir: File): RuntimeConfiguration {
-    return object : RuntimeConfiguration {
-        override val workingDirRoot = File("out")
-        override val sourcesDir = solutionsDir.resolve("src/main/kotlin")
-        override val testsDir = exerciseDir.resolve("src/test/kotlin")
-        override val templateDir = templateDir
-
-        // Debug
-        override val purgeExistingWorkingDirBefore = true
-        override val keepWorkingDirAfter = true
-    }
+    val result = executeOnEnvironment(config, ::executor)
+    result.exportTo(args.resultFile)
 }
 
 private fun parseAndValidate(arguments: Array<String>): Args {
@@ -71,7 +45,23 @@ private fun parseAndValidate(arguments: Array<String>): Args {
     return args
 }
 
-private data class Args(
+fun ExecutionResult.exportTo(file: File) {
+    val status = when (this) {
+        ExecutionResult.Success -> "pass"
+        ExecutionResult.Fail -> "fail"
+        ExecutionResult.Error -> "error"
+    }
+
+    file.writeText("""
+        |{
+        |  "status": "$status",
+        |  "message": null,
+        |  "tests": []
+        |}
+    """.trimMargin())
+}
+
+data class Args(
     val exerciseSlug: String,
     val solutionsDir: File,
     val resultFile: File
