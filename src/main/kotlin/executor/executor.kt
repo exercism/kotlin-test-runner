@@ -4,7 +4,7 @@ import java.io.File
 import java.lang.ProcessBuilder.Redirect
 import java.nio.file.Files
 
-fun execute(env: Environment) {
+fun executor(env: Environment) {
     // Copy project skeleton from references
     env.templateDir.copyRecursively(env.workingDir)
     env.workingDir.resolve("gradlew").setExecutable(true)
