@@ -1,5 +1,8 @@
 package runner
 
+import executor.RuntimeConfiguration
+import executor.executeOnEnvironment
+import executor.executor
 import java.io.File
 
 private val DEBUG = object {
@@ -9,14 +12,44 @@ private val DEBUG = object {
 fun main(arguments: Array<String>) {
     val args = parseAndValidate(arguments)
 
-    println(args)
+    val exercismRepo = File("../exercism-kotlin")
+
+    val selectedExerciseDir = exercismRepo
+        .resolve("exercises")
+        .resolve(args.exerciseSlug)
+    with(selectedExerciseDir) {
+        check(exists()) { "Exercise directory '$absolutePath' not found" }
+        check(isDirectory) { "Exercise directory '$absolutePath' is a file" }
+    }
+
+    val config = buildRuntimeConfig(
+        exerciseDir = selectedExerciseDir,
+        solutionsDir = args.solutionsDir,
+        templateDir = exercismRepo.resolve("_template")
+    )
+    executeOnEnvironment(config, ::executor)
+}
+
+private fun buildRuntimeConfig(exerciseDir: File, solutionsDir: File, templateDir: File): RuntimeConfiguration {
+    return object : RuntimeConfiguration {
+        override val workingDirRoot = File("out")
+        override val sourcesDir = solutionsDir.resolve("src/main/kotlin")
+        override val testsDir = exerciseDir.resolve("src/test/kotlin")
+        override val templateDir = templateDir
+
+        // Debug
+        override val purgeExistingWorkingDirBefore = true
+        override val keepWorkingDirAfter = true
+    }
 }
 
 private fun parseAndValidate(arguments: Array<String>): Args {
     check(arguments.size == 3) { "This test runner requires exactly 3 arguments, but ${arguments.size} provided" }
 
     val outputDir = arguments[2].resolveAsDir()
-    check(!outputDir.exists() || outputDir.isDirectory) { "Output directory '${outputDir.absolutePath}' is not a directory (but file)" }
+    with(outputDir) {
+        check(!exists() || isDirectory) { "Output directory '${absolutePath}' is not a directory (but file)" }
+    }
 
     val args = Args(
         exerciseSlug = arguments[0],
@@ -24,11 +57,16 @@ private fun parseAndValidate(arguments: Array<String>): Args {
         resultFile = outputDir.resolve("results.json")
     )
 
-    check(args.solutionsDir.exists()) { "Solutions directory '${args.solutionsDir.absolutePath}' does not exist" }
+    with(args) {
+        check(exerciseSlug.isNotBlank()) { "Exercise slug should not be blank" }
+        check(solutionsDir.exists()) { "Solutions directory '${solutionsDir.absolutePath}' does not exist" }
 
-    if (!DEBUG.overrideResultFile) {
-        check(!args.resultFile.exists()) { "Result file '${args.resultFile.absolutePath}' exists" }
+        if (!DEBUG.overrideResultFile) {
+            check(!resultFile.exists()) { "Result file '${resultFile.absolutePath}' exists" }
+        }
     }
+
+    println("Parsed arguments: $args")
 
     return args
 }
