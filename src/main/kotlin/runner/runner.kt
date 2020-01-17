@@ -1,6 +1,5 @@
 package runner
 
-import executor.ExecutionResult
 import executor.executeOnEnvironment
 import executor.executor
 import java.io.File
@@ -14,7 +13,7 @@ fun main(arguments: Array<String>) {
     val config = buildRuntimeConfigFrom(args)
 
     val result = executeOnEnvironment(config, ::executor)
-    result.exportTo(args.resultFile)
+    args.resultFile.writeText(result.asJson())
 }
 
 private fun parseAndValidate(arguments: Array<String>): Args {
@@ -43,22 +42,6 @@ private fun parseAndValidate(arguments: Array<String>): Args {
     println("Parsed arguments: $args")
 
     return args
-}
-
-fun ExecutionResult.exportTo(file: File) {
-    val status = when (this) {
-        ExecutionResult.Success -> "pass"
-        ExecutionResult.Fail -> "fail"
-        ExecutionResult.Error -> "error"
-    }
-
-    file.writeText("""
-        |{
-        |  "status": "$status",
-        |  "message": null,
-        |  "tests": []
-        |}
-    """.trimMargin())
 }
 
 data class Args(
