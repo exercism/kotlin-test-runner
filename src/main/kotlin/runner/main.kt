@@ -4,10 +4,9 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import java.io.File
 import java.lang.ProcessBuilder.Redirect
+import java.nio.file.Files
 
-// run --sources ~/exercism/kotlin/hello-world/src/main/kotlin \
-//     --tests ~/exercism/kotlin/hello-world/src/test/kotlin \
-//     --template ../_template
+// run --sources example/src --tests example/test --template ../exercism-kotlin/_template
 
 fun main(args: Array<String>) {
     val launchArguments = parseArguments(args)
@@ -32,8 +31,22 @@ private fun execute(env: Environment) {
     // Copy sources from solution directory
     env.sourcesDir.copyRecursively(env.workingDir.resolve("src/main/kotlin"))
 
-    // Copy tests removing all @ignored
-    env.testsDir.copyRecursively(env.workingDir.resolve("src/test/kotlin"))
+    // Copy tests removing
+    val destinationTestsDir = env.workingDir.resolve("src/test/kotlin")
+    env.testsDir.copyRecursively(destinationTestsDir)
+
+    // Remove all `@Ignore` annotations in tests
+    Files.walk(destinationTestsDir.toPath())
+        .filter { it.endsWith("Test.kt") }
+        .map { it.toFile() }
+        .filter { it.readLines().any { line -> line.contains("@Ignore") } }
+        .forEach { file ->
+            val newContent = file
+                .readLines()
+                .filterNot { it.trim() == "@Ignore" }
+
+            file.writeText(newContent.joinToString("\n"))
+        }
 
     // Run tests
     executeTests(env.workingDir)
