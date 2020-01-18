@@ -1,9 +1,10 @@
 package exercism.kotlin.autotests.runner
 
 import exercism.kotlin.autotests.executor.RuntimeConfiguration
+import exercism.kotlin.autotests.runner.args.LaunchArguments
 import java.io.File
 
-fun buildRuntimeConfigFrom(args: Args): RuntimeConfiguration {
+fun buildRuntimeConfigFrom(args: LaunchArguments): RuntimeConfiguration {
     val exercismRepo = File("../exercism-kotlin")
 
     val selectedExerciseDir = exercismRepo

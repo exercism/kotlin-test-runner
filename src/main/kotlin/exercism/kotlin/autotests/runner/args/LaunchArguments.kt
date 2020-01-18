@@ -1,24 +1,19 @@
-package exercism.kotlin.autotests.runner
+package exercism.kotlin.autotests.runner.args
 
-import exercism.kotlin.autotests.executor.executeOnEnvironment
-import exercism.kotlin.autotests.executor.executor
-import exercism.kotlin.autotests.runner.report.exportReportToFile
+import exercism.kotlin.autotests.runner.BuildConfig
+import utils.resolveAsDir
 import java.io.File
 
-private val DEBUG = object {
-    val overrideResultFile = true
+data class LaunchArguments(
+    val exerciseSlug: String,
+    val solutionsDir: File,
+    val resultFile: File
+) {
+
+    companion object
 }
 
-fun main(arguments: Array<String>) {
-    val args = parseAndValidate(arguments)
-    val config = buildRuntimeConfigFrom(args)
-
-    val result = executeOnEnvironment(config, ::executor)
-
-    result.exportReportToFile(args.resultFile)
-}
-
-private fun parseAndValidate(arguments: Array<String>): Args {
+fun LaunchArguments.Companion.parseAndValidateFrom(arguments: Array<String>): LaunchArguments {
     check(arguments.size == 3) { "This test exercism.kotlin.autotests.runner requires exactly 3 arguments, but ${arguments.size} provided" }
 
     val outputDir = arguments[2].resolveAsDir()
@@ -26,7 +21,7 @@ private fun parseAndValidate(arguments: Array<String>): Args {
         check(!exists() || isDirectory) { "Output directory '${absolutePath}' is not a directory (but file)" }
     }
 
-    val args = Args(
+    val args = LaunchArguments(
         exerciseSlug = arguments[0],
         solutionsDir = arguments[1].resolveAsDir(),
         resultFile = outputDir.resolve("results.json")
@@ -36,7 +31,7 @@ private fun parseAndValidate(arguments: Array<String>): Args {
         check(exerciseSlug.isNotBlank()) { "Exercise slug should not be blank" }
         check(solutionsDir.exists()) { "Solutions directory '${solutionsDir.absolutePath}' does not exist" }
 
-        if (!DEBUG.overrideResultFile) {
+        if (!BuildConfig.overrideResultFile) {
             check(!resultFile.exists()) { "Result file '${resultFile.absolutePath}' exists" }
         }
     }
@@ -45,11 +40,3 @@ private fun parseAndValidate(arguments: Array<String>): Args {
 
     return args
 }
-
-data class Args(
-    val exerciseSlug: String,
-    val solutionsDir: File,
-    val resultFile: File
-)
-
-private fun String.resolveAsDir(): File = File(".").resolve(this)
