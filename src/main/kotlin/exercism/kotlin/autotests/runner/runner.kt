@@ -2,6 +2,7 @@ package exercism.kotlin.autotests.runner
 
 import exercism.kotlin.autotests.executor.executeOnEnvironment
 import exercism.kotlin.autotests.executor.executor
+import exercism.kotlin.autotests.runner.report.exportReportToFile
 import java.io.File
 
 private val DEBUG = object {
@@ -13,7 +14,8 @@ fun main(arguments: Array<String>) {
     val config = buildRuntimeConfigFrom(args)
 
     val result = executeOnEnvironment(config, ::executor)
-    args.resultFile.writeText(result.asJson())
+
+    result.exportReportToFile(args.resultFile)
 }
 
 private fun parseAndValidate(arguments: Array<String>): Args {

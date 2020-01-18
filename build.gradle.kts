@@ -9,9 +9,16 @@ repositories {
 }
 
 dependencies {
+    val version = object {
+        val moshi = "1.9.2"
+    }
+
     implementation(kotlin("stdlib-jdk8"))
 
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
-    implementation("com.github.swordglowsblue:haven-json:1.1.2")
+
+    implementation("com.squareup.moshi:moshi:${version.moshi}")
+    implementation("com.squareup.moshi:moshi-kotlin:${version.moshi}")
+
     implementation("org.dom4j:dom4j:2.1.1")
 }
