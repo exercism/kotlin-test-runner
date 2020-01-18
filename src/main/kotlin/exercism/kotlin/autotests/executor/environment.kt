@@ -2,8 +2,8 @@ package exercism.kotlin.autotests.executor
 
 import exercism.kotlin.autotests.runner.BuildConfig
 import exercism.kotlin.autotests.runner.args.LaunchArguments
+import utils.joinAsText
 import java.io.File
-import java.nio.file.Files
 
 fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> ExecutionResult): ExecutionResult {
     val env = setupEnvironment(args)
@@ -16,8 +16,8 @@ fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> Execu
 private fun setupEnvironment(args: LaunchArguments): Environment {
     val env = run {
         val workingDir = args.solutionsDir
-            .resolve("__runner_working_dir")
-            .also { it.mkdirs() }
+            .resolve("build/__runner_working_dir")
+            .also { it.delete() }
 
         Environment(
             workingDir = workingDir,
@@ -40,27 +40,28 @@ private fun Environment.tearDown() {
 }
 
 private fun copyFilesToWorkingDir(solutionsDir: File, workingDir: File) {
+    fun File.copyToWorkingDir() {
+        copyRecursively(workingDir.resolve(name))
+    }
+
     solutionsDir.listFiles()!!
-        .toList()
-        .minus(workingDir)
-        .forEach { file ->
-            val destination = workingDir.resolve(file.name)
-            file.copyRecursively(destination, overwrite = true, onError = { _, _ -> OnErrorAction.SKIP })
-        }
+        .forEach(File::copyToWorkingDir)
 }
 
 private fun cleanupTests(workingDir: File) {
-    workingDir.resolve("src/test/kotlin").toPath()
-        .let { Files.walk(it) }
-        .filter { it.endsWith("Test.kt") }
-        .map { it.toFile() }
-        .filter { it.readLines().any { line -> line.contains("@Ignore") } }
+    fun File.isTestFile() = name.endsWith("Test.kt")
+    fun List<String>.filterIgnoreLines() = filterNot { it.trim() == "@Ignore" }
+
+    workingDir.resolve("src/test/kotlin")
+        .walk()
+        .filter(File::isTestFile)
         .forEach { file ->
             val newContent = file
                 .readLines()
-                .filterNot { it.trim() == "@Ignore" }
+                .filterIgnoreLines()
+                .joinAsText()
 
-            file.writeText(newContent.joinToString("\n"))
+            file.writeText(newContent)
         }
 }
 

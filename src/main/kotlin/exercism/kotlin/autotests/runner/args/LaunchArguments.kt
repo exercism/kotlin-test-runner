@@ -13,27 +13,17 @@ data class LaunchArguments(
     companion object
 }
 
-fun LaunchArguments.Companion.parseAndValidateFrom(arguments: Array<String>): LaunchArguments {
-    check(arguments.size == 3) { "This test exercism.kotlin.autotests.runner requires exactly 3 arguments, but ${arguments.size} provided" }
-
-    val outputDir = arguments[2].resolveAsDir()
-    with(outputDir) {
-        check(!exists() || isDirectory) { "Output directory '${absolutePath}' is not a directory (but file)" }
-    }
+fun LaunchArguments.Companion.parseAndValidate(arguments: Array<String>): LaunchArguments {
+    check(arguments.size == 3) { "Expecting exactly 3 arguments, but ${arguments.size} provided" }
 
     val args = LaunchArguments(
         exerciseSlug = arguments[0],
         solutionsDir = arguments[1].resolveAsDir(),
-        resultFile = outputDir.resolve("results.json")
+        resultFile = arguments[2].resolveAsDir().resolve("results.json")
     )
 
-    with(args) {
-        check(exerciseSlug.isNotBlank()) { "Exercise slug should not be blank" }
-        check(solutionsDir.exists()) { "Solutions directory '${solutionsDir.absolutePath}' does not exist" }
-
-        if (!BuildConfig.overrideResultFile) {
-            check(!resultFile.exists()) { "Result file '${resultFile.absolutePath}' exists" }
-        }
+    if (!BuildConfig.overrideResultFile) {
+        check(!args.resultFile.exists()) { "Result file '${args.resultFile.absolutePath}' exists" }
     }
 
     println("Parsed arguments: $args")
