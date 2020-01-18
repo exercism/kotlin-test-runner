@@ -13,4 +13,5 @@ dependencies {
 
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("com.github.swordglowsblue:haven-json:1.1.2")
+    implementation("org.dom4j:dom4j:2.1.1")
 }
