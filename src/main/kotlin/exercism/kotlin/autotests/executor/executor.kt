@@ -43,7 +43,7 @@ typealias ExitCode = Int
 private fun executeTests(workingDir: File): ExitCode {
     println("Running gradle")
 
-    val process = ProcessBuilder("./gradlew", "--no-daemon", "--continue", "test")
+    val process = ProcessBuilder("./gradlew", "--no-daemon", "--continue", "clean", "test")
         .directory(workingDir)
         .redirectOutput(Redirect.INHERIT)
         .redirectError(Redirect.INHERIT)
@@ -56,18 +56,19 @@ private fun executeTests(workingDir: File): ExitCode {
 }
 
 private fun parseTestResults(workingDir: File, exitCode: ExitCode): ExecutionResult {
-    val testResultsDir = workingDir.resolve("build/test-results/test/")
-    val resultsFile = testResultsDir.listFiles()!!
+    val reportFiles = workingDir.resolve("build/test-results/test/")
+        .listFiles()!!
         .filter { it.isFile }
+        .filter { it.startsWith("TEST") }
         .filter { it.extension == "xml" }
-        .also { check(it.size <= 1) { "More than one test result files are found. Can't process it now" } }
-        .firstOrNull()
-        ?: return ExecutionResult(Status.Error)
 
-    val suit = parseJUnit4Results(resultsFile)
+    if (reportFiles.isEmpty()) return ExecutionResult(Status.Error)
+
+    val suits = reportFiles
+        .map(::parseJUnit4Results)
 
     return ExecutionResult(
         status = (if (exitCode == 0) Status.Success else Status.Fail),
-        suits = listOf(suit)
+        suits = suits
     )
 }

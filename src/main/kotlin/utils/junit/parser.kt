@@ -8,9 +8,8 @@ import java.io.File
 
 fun parseJUnit4Results(file: File): TestSuit {
     val document = SAXReader().read(file)
-    val testSuit = document.asTestSuit()
 
-    return testSuit
+    return document.asTestSuit()
 }
 
 private fun Document.asTestSuit(): TestSuit {
