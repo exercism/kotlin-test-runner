@@ -2,10 +2,14 @@ package exercism.kotlin.autotests.executor
 
 import utils.junit.parseJUnit4Results
 import java.io.File
-import java.nio.file.Files
 
 fun executor(env: Environment): ExecutionResult {
-    // Copy project skeleton from references
+    val buildResult = executeBuild(env.workingDir)
+
+    return buildExecutionResult(env.workingDir, buildResult)
+
+
+    /*// Copy project skeleton from references
     env.templateDir.copyRecursively(env.workingDir)
     env.workingDir.resolve("gradlew").setExecutable(true)
 
@@ -33,7 +37,7 @@ fun executor(env: Environment): ExecutionResult {
     val buildResult = executeBuild(env.workingDir)
 
     // Prepare report
-    return buildExecutionResult(env.workingDir, buildResult)
+    return buildExecutionResult(env.workingDir, buildResult)*/
 }
 
 data class BuildResult(
