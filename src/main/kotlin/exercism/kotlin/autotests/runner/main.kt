@@ -8,17 +8,13 @@ import exercism.kotlin.autotests.runner.report.exportReportToFile
 
 fun main(arguments: Array<String>) {
     val args = LaunchArguments.parseAndValidateFrom(arguments)
-    main(args)
-}
-
-private fun main(args: LaunchArguments) {
-    val config = buildRuntimeConfigFrom(args)
-
-    val result = executeOnEnvironment(config, ::executor)
+    val result = executeOnEnvironment(args, ::executor)
 
     result.exportReportToFile(args.resultFile)
 }
 
 object BuildConfig {
     const val overrideResultFile = true
+
+    const val keepWorkingDir = true
 }

@@ -7,45 +7,7 @@ fun executor(env: Environment): ExecutionResult {
     val buildResult = executeBuild(env.workingDir)
 
     return buildExecutionResult(env.workingDir, buildResult)
-
-
-    /*// Copy project skeleton from references
-    env.templateDir.copyRecursively(env.workingDir)
-    env.workingDir.resolve("gradlew").setExecutable(true)
-
-    // Copy sources from solution directory
-    env.sourcesDir.copyRecursively(env.workingDir.resolve("src/main/kotlin"))
-
-    // Copy tests removing
-    val destinationTestsDir = env.workingDir.resolve("src/test/kotlin")
-    env.testsDir.copyRecursively(destinationTestsDir)
-
-    // Remove all `@Ignore` annotations in tests
-    Files.walk(destinationTestsDir.toPath())
-        .filter { it.endsWith("Test.kt") }
-        .map { it.toFile() }
-        .filter { it.readLines().any { line -> line.contains("@Ignore") } }
-        .forEach { file ->
-            val newContent = file
-                .readLines()
-                .filterNot { it.trim() == "@Ignore" }
-
-            file.writeText(newContent.joinToString("\n"))
-        }
-
-    // Run tests
-    val buildResult = executeBuild(env.workingDir)
-
-    // Prepare report
-    return buildExecutionResult(env.workingDir, buildResult)*/
 }
-
-data class BuildResult(
-    val succeeded: Boolean,
-    val logFile: File
-)
-
-val BuildResult.failed get() = !succeeded
 
 private fun executeBuild(workingDir: File): BuildResult {
     println("Running gradle")
@@ -122,3 +84,10 @@ private fun File.listJUnitResultFiles(): List<File> {
         .filter { it.name.startsWith("TEST") }
         .filter { it.extension == "xml" }
 }
+
+data class BuildResult(
+    val succeeded: Boolean,
+    val logFile: File
+)
+
+val BuildResult.failed get() = !succeeded

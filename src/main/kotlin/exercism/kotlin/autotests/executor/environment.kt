@@ -1,47 +1,55 @@
 package exercism.kotlin.autotests.executor
 
+import exercism.kotlin.autotests.runner.BuildConfig
+import exercism.kotlin.autotests.runner.args.LaunchArguments
 import java.io.File
 import java.nio.file.Files
 
-fun executeOnEnvironment(config: RuntimeConfiguration, executor: (Environment) -> ExecutionResult): ExecutionResult {
-    val env = setupEnvironment(config)
+fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> ExecutionResult): ExecutionResult {
+    val env = setupEnvironment(args)
     val result = executor(env)
-    env.tearDown(config)
+    env.tearDown()
 
     return result
 }
 
-private fun setupEnvironment(config: RuntimeConfiguration): Environment {
-    // Check arguments
-//    check(config.sourcesDir.exists()) { "Sources directory '${config.sourcesDir.absolutePath}' does not exist" }
-//    check(config.testsDir.exists()) { "Tests directory '${config.testsDir.absolutePath}' does not exist" }
-//    check(config.templateDir.exists()) { "Project template directory '${config.templateDir.absolutePath}' does not exist" }
-    //check(args.sourcesDir.isDirectory) { "Sources directory '${args.sourcesDir.absolutePath}' is not a directory" }
+private fun setupEnvironment(args: LaunchArguments): Environment {
+    val env = run {
+        val workingDir = args.solutionsDir
+            .resolve("__runner_working_dir")
+            .also { it.mkdirs() }
 
-    // Create temp dir
-    val tempDir = config.workingDirRoot.resolve("__autotest_workingdir")
-    if (config.purgeExistingWorkingDirBefore) {
-        if (tempDir.exists()) tempDir.deleteRecursively()
-    } else {
-        check(!tempDir.exists()) { "Directory ${tempDir.absolutePath} exists. Can't continue" }
+        Environment(
+            workingDir = workingDir,
+            resultFile = args.resultFile
+        )
     }
 
-    println("Creating temp working dir: '${tempDir.absolutePath}'")
-    tempDir.mkdirs()
+    copyFilesToWorkingDir(args.solutionsDir, env.workingDir)
+    cleanupTests(env.workingDir)
 
-    val solutionsDir =  config.args.solutionsDir
-    val workingDir = solutionsDir
-        .resolve("__runner_working_dir")
-        .also { it.mkdirs() }
+    env.workingDir.resolve("gradlew").setExecutable(true)
 
+    return env
+}
+
+private fun Environment.tearDown() {
+    if (!BuildConfig.keepWorkingDir) {
+        workingDir.deleteRecursively()
+    }
+}
+
+private fun copyFilesToWorkingDir(solutionsDir: File, workingDir: File) {
     solutionsDir.listFiles()!!
         .toList()
         .minus(workingDir)
         .forEach { file ->
-            file.copyRecursively(workingDir.resolve(file.name), overwrite = true)
+            val destination = workingDir.resolve(file.name)
+            file.copyRecursively(destination, overwrite = true, onError = { _, _ -> OnErrorAction.SKIP })
         }
-    workingDir.resolve("gradlew").setExecutable(true)
+}
 
+private fun cleanupTests(workingDir: File) {
     workingDir.resolve("src/test/kotlin").toPath()
         .let { Files.walk(it) }
         .filter { it.endsWith("Test.kt") }
@@ -54,34 +62,9 @@ private fun setupEnvironment(config: RuntimeConfiguration): Environment {
 
             file.writeText(newContent.joinToString("\n"))
         }
-
-    return Environment(
-        workingDir = workingDir,
-        resultFile = config.args.resultFile
-
-//        ,
-//        workingDir = tempDir,
-//
-//        sourcesDir = config.sourcesDir,
-//        testsDir = config.testsDir,
-//        templateDir = config.templateDir
-    )
-}
-
-private fun Environment.tearDown(config: RuntimeConfiguration) {
-    // Remote temp dir
-    if (!config.keepWorkingDirAfter) {
-        //workingDir.deleteRecursively()
-    }
 }
 
 data class Environment(
     val workingDir: File,
     val resultFile: File
-
-//    ,
-//    val workingDir: File,
-//    val sourcesDir: File,
-//    val testsDir: File,
-//    val templateDir: File
 )
