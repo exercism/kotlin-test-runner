@@ -15,7 +15,7 @@ fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> Execu
 
 private fun setupEnvironment(args: LaunchArguments): Environment {
     val env = Environment(
-        workingDir = args.solutionsDir.resolve("build/__runner_working_dir"),
+        workingDir = args.solutionsDir.resolve("out/"),
         resultFile = args.resultFile
     )
 
