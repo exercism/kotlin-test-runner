@@ -42,7 +42,8 @@ private fun Element.asTestCase(): TestCase {
 private fun Element.asFailure(): TestCase.Failure {
     return TestCase.Failure(
         message = get("message").text,
-        type = get("type").text
+        type = get("type").text,
+        stackTrace = text
     )
 }
 
@@ -72,7 +73,8 @@ data class TestCase(
 
     data class Failure(
         val message: String,
-        val type: String
+        val type: String,
+        val stackTrace: String
     )
 }
 
