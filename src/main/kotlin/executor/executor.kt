@@ -1,5 +1,7 @@
 package executor
 
+import executor.ExecutionResult.Status
+import junit.parseJUnit4Results
 import java.io.File
 import java.lang.ProcessBuilder.Redirect
 import java.nio.file.Files
@@ -33,7 +35,7 @@ fun executor(env: Environment): ExecutionResult {
     val exitCode = executeTests(env.workingDir)
 
     // Prepare report
-    return parseTestResults(exitCode)
+    return parseTestResults(env.workingDir, exitCode)
 }
 
 typealias ExitCode = Int
@@ -53,9 +55,19 @@ private fun executeTests(workingDir: File): ExitCode {
     return exitCode
 }
 
-private fun parseTestResults(exitCode: ExitCode): ExecutionResult {
-    return when (exitCode) {
-        0 -> ExecutionResult.Success
-        else -> ExecutionResult.Fail
-    }
+private fun parseTestResults(workingDir: File, exitCode: ExitCode): ExecutionResult {
+    val testResultsDir = workingDir.resolve("build/test-results/test/")
+    val resultsFile = testResultsDir.listFiles()!!
+        .filter { it.isFile }
+        .filter { it.extension == "xml" }
+        .also { check(it.size <= 1) { "More than one test result files are found. Can't process it now" } }
+        .firstOrNull()
+        ?: return ExecutionResult(Status.Error)
+
+    val suit = parseJUnit4Results(resultsFile)
+
+    return ExecutionResult(
+        status = (if (exitCode == 0) Status.Success else Status.Fail),
+        suits = listOf(suit)
+    )
 }

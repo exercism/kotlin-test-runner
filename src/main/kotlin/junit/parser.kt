@@ -6,11 +6,11 @@ import org.dom4j.Element
 import org.dom4j.io.SAXReader
 import java.io.File
 
-fun parseJUnit4Results(file: File) {
+fun parseJUnit4Results(file: File): TestSuit {
     val document = SAXReader().read(file)
     val testSuit = document.asTestSuit()
 
-    println(testSuit)
+    return testSuit
 }
 
 private fun Document.asTestSuit(): TestSuit {
@@ -78,7 +78,10 @@ data class TestCase(
 }
 
 fun main() {
-    parseJUnit4Results(File("out/__autotest_workingdir/build/test-results/test/TEST-HelloWorldTest.xml"))
+    val testSuit = parseJUnit4Results(
+        File("out/__autotest_workingdir/build/test-results/test/TEST-HelloWorldTest.xml"))
+
+    println(testSuit)
 }
 
 private operator fun Element.get(name: String): Attribute = attribute(name)
