@@ -2,14 +2,7 @@ package exercism.kotlin.autotests.executor
 
 import utils.junit.TestSuit
 
-data class ExecutionResult(
-    val status: Status,
-    val suits: List<TestSuit> = emptyList()
-) {
-
-    enum class Status {
-        Success,
-        Fail,
-        Error
-    }
+sealed class ExecutionResult {
+    data class CompilationFailed(val message: String) : ExecutionResult()
+    data class TestsFinished(val isSuccessful: Boolean, val suits: List<TestSuit>) : ExecutionResult()
 }

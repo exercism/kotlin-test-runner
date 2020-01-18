@@ -1,9 +1,8 @@
 package exercism.kotlin.autotests.runner.report
 
 import exercism.kotlin.autotests.executor.ExecutionResult
-import exercism.kotlin.autotests.executor.ExecutionResult.Status.Error
-import exercism.kotlin.autotests.executor.ExecutionResult.Status.Fail
-import exercism.kotlin.autotests.executor.ExecutionResult.Status.Success
+import exercism.kotlin.autotests.executor.ExecutionResult.CompilationFailed
+import exercism.kotlin.autotests.executor.ExecutionResult.TestsFinished
 import utils.junit.TestCase
 import utils.junit.TestSuit
 import java.io.File
@@ -15,16 +14,39 @@ fun ExecutionResult.exportReportToFile(file: File) {
 
 private fun ExecutionResult.asReport(): Report =
     Report(
-        status = status.asReportStatus(),
-        message = null,
-        tests = suits.asReportTestEntries()
+        status = parseStatus(),
+        message = parseMessage(),
+        tests = parseTestEntries()
     )
 
-private fun ExecutionResult.Status.asReportStatus(): Report.Status =
+private fun ExecutionResult.parseStatus(): Report.Status =
     when (this) {
-        Success -> Report.Status.Pass
-        Fail -> Report.Status.Fail
-        Error -> Report.Status.Error
+        is CompilationFailed ->
+            Report.Status.Error
+        is TestsFinished ->
+            if (isSuccessful) Report.Status.Pass else Report.Status.Fail
+    }
+
+private fun ExecutionResult.parseMessage(): String =
+    when (this) {
+        is CompilationFailed ->
+            message
+        is TestsFinished ->
+            if (isSuccessful) {
+                ""
+            } else {
+                val failures = suits.sumBy { it.failures + it.errors }
+
+                "Tests failed: $failures"
+            }
+    }
+
+private fun ExecutionResult.parseTestEntries(): List<Report.TestEntry> =
+    when (this) {
+        is CompilationFailed ->
+            emptyList()
+        is TestsFinished ->
+            suits.asReportTestEntries()
     }
 
 private fun List<TestSuit>.asReportTestEntries(): List<Report.TestEntry> =
