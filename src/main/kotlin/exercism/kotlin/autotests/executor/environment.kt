@@ -50,6 +50,7 @@ private fun cleanupTests(workingDir: File) {
 
     workingDir.resolve("src/test/kotlin")
         .walk()
+        .toList()
         .filter(File::isTestFile)
         .forEach { file ->
             val newContent = file
