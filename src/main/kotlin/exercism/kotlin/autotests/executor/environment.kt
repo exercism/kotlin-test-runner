@@ -14,21 +14,16 @@ fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> Execu
 }
 
 private fun setupEnvironment(args: LaunchArguments): Environment {
-    val env = run {
-        val workingDir = args.solutionsDir
-            .resolve("build/__runner_working_dir")
-            .also { it.delete() }
-
-        Environment(
-            workingDir = workingDir,
-            resultFile = args.resultFile
-        )
-    }
+    val env = Environment(
+        workingDir = args.solutionsDir.resolve("build/__runner_working_dir"),
+        resultFile = args.resultFile
+    )
 
     copyFilesToWorkingDir(args.solutionsDir, env.workingDir)
     cleanupTests(env.workingDir)
-
     env.workingDir.resolve("gradlew").setExecutable(true)
+
+    env.resultFile.parentFile.mkdirs()
 
     return env
 }
@@ -44,6 +39,7 @@ private fun copyFilesToWorkingDir(solutionsDir: File, workingDir: File) {
         copyRecursively(workingDir.resolve(name))
     }
 
+    workingDir.deleteRecursively()
     solutionsDir.listFiles()!!
         .forEach(File::copyToWorkingDir)
 }
