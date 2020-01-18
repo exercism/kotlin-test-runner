@@ -1,6 +1,6 @@
-package runner
+package exercism.kotlin.autotests.runner
 
-import executor.RuntimeConfiguration
+import exercism.kotlin.autotests.executor.RuntimeConfiguration
 import java.io.File
 
 fun buildRuntimeConfigFrom(args: Args): RuntimeConfiguration {

@@ -1,6 +1,6 @@
-package executor
+package exercism.kotlin.autotests.executor
 
-import junit.TestSuit
+import utils.junit.TestSuit
 
 data class ExecutionResult(
     val status: Status,

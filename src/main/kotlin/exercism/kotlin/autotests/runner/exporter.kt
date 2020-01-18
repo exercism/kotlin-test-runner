@@ -1,12 +1,12 @@
-package runner
+package exercism.kotlin.autotests.runner
 
 import com.tripl3dogdare.havenjson.Json
 import com.tripl3dogdare.havenjson.JsonArray
-import executor.ExecutionResult
-import executor.ExecutionResult.Status.Error
-import executor.ExecutionResult.Status.Fail
-import executor.ExecutionResult.Status.Success
-import junit.TestSuit
+import exercism.kotlin.autotests.executor.ExecutionResult
+import exercism.kotlin.autotests.executor.ExecutionResult.Status.Error
+import exercism.kotlin.autotests.executor.ExecutionResult.Status.Fail
+import exercism.kotlin.autotests.executor.ExecutionResult.Status.Success
+import utils.junit.TestSuit
 
 fun ExecutionResult.asJson(): String {
     return Json(

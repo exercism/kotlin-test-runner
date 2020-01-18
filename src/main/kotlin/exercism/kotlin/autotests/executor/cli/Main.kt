@@ -1,10 +1,10 @@
-package cli
+package exercism.kotlin.autotests.executor.cli
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
-import executor.RuntimeConfiguration
-import executor.executor
-import executor.executeOnEnvironment
+import exercism.kotlin.autotests.executor.RuntimeConfiguration
+import exercism.kotlin.autotests.executor.executor
+import exercism.kotlin.autotests.executor.executeOnEnvironment
 import java.io.File
 
 // run --sources example/src --tests example/test --template ../exercism-kotlin/_template

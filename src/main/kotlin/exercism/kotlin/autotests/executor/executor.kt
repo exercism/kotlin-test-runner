@@ -1,7 +1,7 @@
-package executor
+package exercism.kotlin.autotests.executor
 
-import executor.ExecutionResult.Status
-import junit.parseJUnit4Results
+import exercism.kotlin.autotests.executor.ExecutionResult.Status
+import utils.junit.parseJUnit4Results
 import java.io.File
 import java.lang.ProcessBuilder.Redirect
 import java.nio.file.Files

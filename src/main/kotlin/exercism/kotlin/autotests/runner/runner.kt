@@ -1,7 +1,7 @@
-package runner
+package exercism.kotlin.autotests.runner
 
-import executor.executeOnEnvironment
-import executor.executor
+import exercism.kotlin.autotests.executor.executeOnEnvironment
+import exercism.kotlin.autotests.executor.executor
 import java.io.File
 
 private val DEBUG = object {
@@ -17,7 +17,7 @@ fun main(arguments: Array<String>) {
 }
 
 private fun parseAndValidate(arguments: Array<String>): Args {
-    check(arguments.size == 3) { "This test runner requires exactly 3 arguments, but ${arguments.size} provided" }
+    check(arguments.size == 3) { "This test exercism.kotlin.autotests.runner requires exactly 3 arguments, but ${arguments.size} provided" }
 
     val outputDir = arguments[2].resolveAsDir()
     with(outputDir) {

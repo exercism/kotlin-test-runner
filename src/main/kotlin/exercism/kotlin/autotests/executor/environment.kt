@@ -1,4 +1,4 @@
-package executor
+package exercism.kotlin.autotests.executor
 
 import java.io.File
 

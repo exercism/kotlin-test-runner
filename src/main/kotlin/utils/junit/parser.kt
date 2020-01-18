@@ -1,4 +1,4 @@
-package junit
+package utils.junit
 
 import org.dom4j.Attribute
 import org.dom4j.Document
