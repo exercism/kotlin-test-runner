@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.3.60"
+    application
 }
 
 repositories {
@@ -21,4 +22,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:${version.moshi}")
 
     implementation("org.dom4j:dom4j:2.1.1")
+}
+
+application {
+    mainClassName = "exercism.kotlin.autotests.runner.MainKt"
 }
