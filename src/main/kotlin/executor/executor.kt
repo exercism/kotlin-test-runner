@@ -41,16 +41,14 @@ typealias ExitCode = Int
 private fun executeTests(workingDir: File): ExitCode {
     println("Running gradle")
 
-    val process = ProcessBuilder("./gradlew", "test")
+    val process = ProcessBuilder("./gradlew", "--no-daemon", "--continue", "test")
         .directory(workingDir)
         .redirectOutput(Redirect.INHERIT)
         .redirectError(Redirect.INHERIT)
         .start()
 
     val exitCode = process.waitFor()
-
-    if (exitCode == 0) println("Success")
-    else println("Fail")
+    println("Gradle finished with exit code $exitCode")
 
     return exitCode
 }
