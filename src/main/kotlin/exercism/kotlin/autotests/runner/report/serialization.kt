@@ -6,16 +6,20 @@ import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-private val moshi = Moshi.Builder()
-    .add(Report.Status::class.java, Report.Status.moshiAdapter())
-    .add(KotlinJsonAdapterFactory())
-    .build()
-
 fun Report.asJson(): String {
     return moshi.adapter(Report::class.java)
         .indent("  ")
         .toJson(this)
 }
+
+// Moshi instance
+
+private val moshi = Moshi.Builder()
+    .add(Report.Status::class.java, Report.Status.moshiAdapter())
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+// Adapters
 
 private fun Report.Status.Companion.moshiAdapter() = object : JsonAdapter<Report.Status>() {
 
