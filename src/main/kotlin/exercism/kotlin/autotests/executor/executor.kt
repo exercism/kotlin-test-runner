@@ -3,12 +3,26 @@ package exercism.kotlin.autotests.executor
 import utils.junit.parseJUnit4Results
 import java.io.File
 
+/**
+ * Build sources, run tests with `./gradlew` and parse JUnit xml-report.
+ */
 fun executor(env: Environment): ExecutionResult {
     val buildResult = executeBuild(env.workingDir)
 
     return buildExecutionResult(env.workingDir, buildResult)
 }
 
+/**
+ * Run `./gradlew test` and write gradle logs to
+ * external file (see implementation for details).
+ *
+ * Gradle logs will also be printed to stdout between special markers:
+ * ```
+ * === Log START ===
+ * ...
+ * === Log END ===
+ * ```
+ */
 private fun executeBuild(workingDir: File): BuildResult {
     println("Running gradle")
 
@@ -28,6 +42,12 @@ private fun executeBuild(workingDir: File): BuildResult {
 
 typealias ExitCode = Int
 
+/**
+ * Run `./gradlew test` from [workingDir] with some parameters.
+ * Process `stdout` and `stderr` are written to [logFile].
+ *
+ * @return exit code of gradle build process.
+ */
 private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
     val ioRedirect = run {
         logFile.delete()
@@ -46,6 +66,12 @@ private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
     return process.waitFor()
 }
 
+/**
+ * Parse JUnit4 xml-report and build [ExecutionResult].
+ *
+ * If compilation was failed - error is cut-out from gradle logs,
+ * cleared from full path (`src/main/kotlin/Foo.kt` only left) and used as an error message.
+ */
 private fun buildExecutionResult(workingDir: File, buildResult: BuildResult): ExecutionResult {
     val testsDir = workingDir.resolve("build/test-results/test/")
 
@@ -76,6 +102,7 @@ private fun buildExecutionResult(workingDir: File, buildResult: BuildResult): Ex
     )
 }
 
+/** Search for JUnit test suit report files */
 private fun File.listJUnitResultFiles(): List<File> {
     val files = listFiles() ?: return emptyList()
 

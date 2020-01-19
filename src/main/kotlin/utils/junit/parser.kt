@@ -6,6 +6,8 @@ import org.dom4j.Element
 import org.dom4j.io.SAXReader
 import java.io.File
 
+// JUnit4 xml-report parser
+
 fun parseJUnit4Results(file: File): TestSuit {
     val document = SAXReader().read(file)
 
@@ -78,6 +80,7 @@ data class TestCase(
     )
 }
 
+// Method for debug purposes
 fun main() {
     val testSuit = parseJUnit4Results(
         File("out/__autotest_workingdir/build/test-results/test/TEST-HelloWorldTest.xml"))

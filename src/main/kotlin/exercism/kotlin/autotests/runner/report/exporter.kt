@@ -7,6 +7,9 @@ import utils.junit.TestCase
 import utils.junit.TestSuit
 import java.io.File
 
+/**
+ * Write report to json [file].
+ */
 fun ExecutionResult.exportReportToFile(file: File) {
     val report = asReport()
     file.writeText(report.asJson())

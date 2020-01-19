@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
+/** Convert report to pretty-printed json string */
 fun Report.asJson(): String {
     return moshi.adapter(Report::class.java)
         .indent("  ")
