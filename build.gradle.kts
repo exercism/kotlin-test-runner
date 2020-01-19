@@ -22,6 +22,12 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:${version.moshi}")
 
     implementation("org.dom4j:dom4j:2.1.1")
+
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+}
+
+tasks.withType<Test>() {
+    useJUnitPlatform()
 }
 
 application {

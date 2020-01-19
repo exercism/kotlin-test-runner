@@ -15,7 +15,7 @@ fun ExecutionResult.exportReportToFile(file: File) {
     file.writeText(report.asJson())
 }
 
-private fun ExecutionResult.asReport(): Report =
+fun ExecutionResult.asReport(): Report =
     Report(
         status = parseStatus(),
         message = parseMessage(),
