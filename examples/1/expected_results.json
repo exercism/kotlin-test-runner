@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "message": "",
+  "tests": [
+    {
+      "name": "passing test",
+      "status": "pass",
+      "message": "",
+      "output": ""
+    }
+  ]
+}
