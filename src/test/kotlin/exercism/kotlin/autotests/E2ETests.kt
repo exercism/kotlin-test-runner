@@ -9,7 +9,6 @@ import java.nio.file.Files
 class E2ETests : StringSpec({
 
     "single passing test" { testCase("1") }
-    "example 1" { testCase("2") }
 })
 
 private fun testCase(id: String) {
