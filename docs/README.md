@@ -7,7 +7,7 @@ docker build --tag exercism-kotlin-test-runner .
 ## Using docker image
 
 ```shell script
-docker run -v (pwd)/examples:/examples exercism-kotlin-test-runner slug examples/full examples
+docker run -v (pwd)/examples:/examples exercism-kotlin-test-runner slug /examples/full /examples/out
 ```
 
 ## Running docker image interactively
