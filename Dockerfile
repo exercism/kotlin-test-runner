@@ -1,6 +1,6 @@
 # === Build builder image ===
 
-FROM openjdk:8-jdk-alpine as build
+FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-alpine-slim AS build
 RUN apk add --no-cache tar bash procps
 
 WORKDIR /home/builder
@@ -29,7 +29,7 @@ RUN cp build/libs/autotest-runner.jar .
 
 # === Build runtime image ===
 
-FROM openjdk:8-jdk-alpine
+FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-alpine-slim
 ARG WORKDIR="/opt/test-runner/bin"
 
 COPY bin/run.sh ${WORKDIR}/run.sh
