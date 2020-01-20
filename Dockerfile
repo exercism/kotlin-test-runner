@@ -19,13 +19,13 @@ COPY src ./src
 COPY build.gradle.kts ./
 
 # Build test runner
-RUN ${GRADLE_HOME}/bin/gradle --no-daemon shadowJar
-COPY build/libs/autotest-runner.jar .
+RUN ${GRADLE_HOME}/bin/gradle -i shadowJar
+RUN cp build/libs/autotest-runner.jar .
 
 # List result files
-RUN rm -r build
-RUN apk add --no-cache tree
-RUN tree .
+#RUN rm -r build
+#RUN apk add --no-cache tree
+#RUN tree .
 
 # === Build runtime image ===
 
@@ -34,8 +34,8 @@ ARG WORKDIR="/opt/test-runner/bin"
 
 COPY bin/run.sh ${WORKDIR}/run.sh
 COPY --from=build ${GRADLE_HOME} ${GRADLE_HOME}
-COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}
+COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}/
 
 ENV PATH "${PATH}:${GRADLE_HOME}/bin"
 
-ENTRYPOINT ["sh", "${WORKDIR}/run.sh"]
+ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]
