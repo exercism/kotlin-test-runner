@@ -9,6 +9,9 @@ import java.nio.file.Files
 
 class E2ETests : StringSpec({
     testCase("single passing test", "1")
+    testCase("compilation error", "2")
+    testCase("some tests are failing", "3")
+    // TODO add more tests with other cases
 })
 
 private fun AbstractStringSpec.testCase(name: String, id: String) {

@@ -1,0 +1,5 @@
+{
+  "status": "error",
+  "message": "e: src/main/kotlin/Ex2.kt: (2, 5): Unresolved reference: ooops",
+  "tests": []
+}
