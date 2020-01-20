@@ -35,13 +35,7 @@ private fun ExecutionResult.parseMessage(): String =
         is CompilationFailed ->
             message
         is TestsFinished ->
-            if (isSuccessful) {
-                ""
-            } else {
-                val failures = suits.sumBy { it.failures + it.errors }
-
-                "Tests failed: $failures"
-            }
+            ""
     }
 
 private fun ExecutionResult.parseTestEntries(): List<Report.TestEntry> =

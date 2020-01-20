@@ -1,6 +1,6 @@
 {
   "status": "fail",
-  "message": "Tests failed: 1",
+  "message": "",
   "tests": [
     {
       "name": "two plus two is five",

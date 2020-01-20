@@ -39,7 +39,7 @@ class ExporterKtTest : StringSpec({
         val report = result.asReport()
 
         report.status shouldBe Report.Status.Fail
-        report.message shouldBe "Tests failed: 0"
+        report.message shouldBe ""
         report.tests shouldBe emptyList()
     }
 })
