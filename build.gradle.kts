@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm") version "1.3.60"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
     application
 }
 
@@ -26,10 +29,14 @@ dependencies {
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
 }
 
-tasks.withType<Test>() {
+tasks.withType<Test> {
     useJUnitPlatform()
 }
 
 application {
     mainClassName = "exercism.kotlin.autotests.runner.MainKt"
+}
+
+tasks.withType<ShadowJar> {
+    archiveFileName.set("autotest-runner.jar")
 }
