@@ -55,7 +55,7 @@ private fun TestCase.asReportTestEntry(): Report.TestEntry =
         name = name,
         status = if (failure == null) Report.Status.Pass else Report.Status.Fail,
         message = getMessage(),
-        output = failure?.stackTrace ?: "" // TODO output is available only for test suit in JUnit4
+        output = "" // TODO output is available only for test suit in JUnit4
     )
 
 private fun TestCase.getMessage(): String {
