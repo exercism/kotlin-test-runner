@@ -38,4 +38,6 @@ COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}/
 
 ENV PATH "${PATH}:${GRADLE_HOME}/bin"
 
+WORKDIR /opt/test-runner
+
 ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]
