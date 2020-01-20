@@ -10,12 +10,12 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib"))
-    
-    testImplementation("junit:junit:4.12")
-    testImplementation(kotlin("test-junit"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform()
     testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         events("passed", "failed", "skipped")

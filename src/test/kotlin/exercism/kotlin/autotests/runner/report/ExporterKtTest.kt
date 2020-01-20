@@ -42,7 +42,19 @@ class ExporterKtTest : StringSpec({
         report.message shouldBe ""
         report.tests shouldBe emptyList()
     }
+
+    /*"some tests skipped" {
+        val result = ExecutionResult.TestsFinished(
+            isSuccessful = true,
+            suits = emptyList())
+
+        val report = result.asReport()
+
+        report.status shouldBe Report.Status.Pass
+        report.message shouldBe ""
+        report.tests shouldBe emptyList()
+    }*/
 })
 
 private fun createTestSuit(name: String, testNames: List<String>) =
-    TestSuit(name, 0, 0, 0, 0, "", "", "", "", "", testNames.map { TestCase(it, "", "", null) })
+    TestSuit(name, 0, 0, 0, 0, "", "", "", "", "", testNames.map { TestCase(it, "", "", false, null) })

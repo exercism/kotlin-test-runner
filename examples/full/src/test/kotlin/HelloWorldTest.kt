@@ -1,5 +1,6 @@
-import org.junit.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 class HelloWorldTest {
 
@@ -9,6 +10,7 @@ class HelloWorldTest {
     }
 
     @Test
+    @Disabled
     fun `passing test`() {
         println("I'm always passing! <3")
     }

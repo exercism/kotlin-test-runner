@@ -48,6 +48,7 @@ private fun ExecutionResult.parseTestEntries(): List<Report.TestEntry> =
 
 private fun List<TestSuit>.asReportTestEntries(): List<Report.TestEntry> =
     flatMap { it.testCases }
+        .filterNot { it.isSkipped }
         .map(TestCase::asReportTestEntry)
 
 private fun TestCase.asReportTestEntry(): Report.TestEntry =

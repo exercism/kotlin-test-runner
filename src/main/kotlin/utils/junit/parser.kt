@@ -18,7 +18,7 @@ private fun Document.asTestSuit(): TestSuit {
     val suit = rootElement
 
     return TestSuit(
-        name = suit["name"].value,
+        name = suit["name"].value.removeSuffix("()"),
         tests = suit["tests"].value.toInt(),
         skipped = suit["skipped"].value.toInt(),
         failures = suit["failures"].value.toInt(),
@@ -37,6 +37,7 @@ private fun Element.asTestCase(): TestCase {
         name = get("name").text,
         className = get("classname").text,
         time = get("time").text,
+        isSkipped = element("skipped") != null,
         failure = element("failure")?.asFailure()
     )
 }
@@ -70,6 +71,7 @@ data class TestCase(
     val name: String,
     val className: String,
     val time: String,
+    val isSkipped: Boolean,
     val failure: Failure?
 ) {
 

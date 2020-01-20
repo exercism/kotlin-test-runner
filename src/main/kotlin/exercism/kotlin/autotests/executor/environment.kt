@@ -58,7 +58,7 @@ private fun copyFilesToWorkingDir(solutionsDir: File, workingDir: File) {
 /** Remove `@Ignore` annotation in tests. */
 private fun cleanupTests(workingDir: File) {
     fun File.isTestFile() = name.endsWith("Test.kt")
-    fun List<String>.filterIgnoreLines() = filterNot { it.trim() == "@Ignore" }
+    fun List<String>.filterDisableLines() = filterNot { it.trim() == "@Disabled" }
 
     workingDir.resolve("src/test/kotlin")
         .walk()
@@ -67,7 +67,7 @@ private fun cleanupTests(workingDir: File) {
         .forEach { file ->
             val newContent = file
                 .readLines()
-                .filterIgnoreLines()
+                .filterDisableLines()
                 .joinAsText()
 
             file.writeText(newContent)
