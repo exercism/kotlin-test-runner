@@ -4,6 +4,7 @@ import exercism.kotlin.autotests.runner.BuildConfig
 import exercism.kotlin.autotests.runner.args.LaunchArguments
 import utils.joinAsText
 import java.io.File
+import java.nio.file.Files
 
 /**
  * Make some preparations before running build process (setup environment), launch [executor] and clean-up after.
@@ -24,7 +25,7 @@ fun executeOnEnvironment(args: LaunchArguments, executor: (Environment) -> Execu
  */
 private fun setupEnvironment(args: LaunchArguments): Environment {
     val env = Environment(
-        workingDir = args.solutionsDir.resolve("out/"),
+        workingDir = Files.createTempDirectory("kotlin-autotest-runnner").toFile(),
         resultFile = args.resultFile
     )
 
