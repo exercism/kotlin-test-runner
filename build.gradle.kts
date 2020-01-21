@@ -1,7 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     kotlin("jvm") version "1.3.60"
+
+    id("org.jetbrains.dokka") version "0.10.0"
+
     id("com.github.johnrengelman.shadow") version "5.2.0"
     application
 }
@@ -39,4 +43,13 @@ application {
 
 tasks.withType<ShadowJar> {
     archiveFileName.set("autotest-runner.jar")
+}
+
+tasks.withType<DokkaTask> {
+    outputFormat = "markdown"
+    outputDirectory = "docs"
+
+    configuration {
+        moduleName = "api"
+    }
 }
