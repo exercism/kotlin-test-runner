@@ -46,10 +46,10 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<DokkaTask> {
-    outputFormat = "markdown"
+    outputFormat = "gfm"
     outputDirectory = "docs"
 
     configuration {
-        moduleName = "api"
+        includes = listOf("docs/dokka-includes/modules.md")
     }
 }

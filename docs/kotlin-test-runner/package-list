@@ -1,0 +1,10 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+$dokka.location:utils$joinAsText(kotlin.collections.List((kotlin.String)))utils/kotlin.collections.-list/join-as-text.md
+$dokka.location:utils$resolveAsDir(kotlin.String)utils/kotlin.-string/resolve-as-dir.md
+exercism.kotlin.autotests.executor
+exercism.kotlin.autotests.runner
+exercism.kotlin.autotests.runner.args
+exercism.kotlin.autotests.runner.report
+utils
+utils.junit
