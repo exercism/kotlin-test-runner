@@ -1,4 +1,4 @@
-## Dokka documentation
+## Generated documentation
 
 [here](kotlin-test-runner/index.md).
 
