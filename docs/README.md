@@ -1,16 +1,22 @@
-## Building docker image
+## Dokka documentation
+
+[here](kotlin-test-runner/index.md).
+
+## Tips for docker
+
+### Building docker image
 
 ```shell script
 docker build --tag exercism-kotlin-test-runner .
 ```
 
-## Using docker image
+### Using docker image
 
 ```shell script
 docker run -v (pwd)/examples:/examples exercism-kotlin-test-runner slug /examples/full /examples/out
 ```
 
-## Running docker image interactively
+### Running docker image interactively
 
 ```shell script
 docker run -v (pwd)/examples:/examples --entrypoint "/bin/bash" -it exercism-kotlin-test-runner
