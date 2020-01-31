@@ -9,9 +9,10 @@ repositories {
 }
 
 dependencies {
-    compile(kotlin("stdlib"))
+    implementation(kotlin("stdlib"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.6.0")
 }
 
 tasks.withType<Test> {

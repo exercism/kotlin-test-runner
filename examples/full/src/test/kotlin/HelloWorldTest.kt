@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 class HelloWorldTest {
 
     @Test
-    fun helloWorldTest() {
+    fun `simple test`() {
         assertEquals("Hello, World!", hello())
     }
 
