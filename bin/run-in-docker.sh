@@ -39,5 +39,5 @@ docker run \
     --read-only \
     --mount type=bind,src="${input_dir}",dst=/solution \
     --mount type=bind,src="${output_dir}",dst=/output \
-    --mount type=tmpfs,dst=/tmp \
+    --tmpfs /tmp:exec \
     exercism/test-runner "${slug}" /solution /output
