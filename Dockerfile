@@ -1,43 +1,33 @@
 # === Build builder image ===
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-alpine-slim AS build
-RUN apk add --no-cache tar bash procps
+FROM gradle:6.8-jdk11 AS build
 
 WORKDIR /home/builder
-
-# Download gradle (used by current auto-tester implementation)
-ARG GRADLE_DISTRIB_NAME="gradle-6.0.1"
-ARG GRADLE_DISTRIB_FILE="${GRADLE_DISTRIB_NAME}-bin.zip"
-ARG GRADLE_HOME="/home/gradle"
-
-RUN wget https://services.gradle.org/distributions/${GRADLE_DISTRIB_FILE}
-RUN unzip ${GRADLE_DISTRIB_FILE}
-RUN mv ${GRADLE_DISTRIB_NAME} ${GRADLE_HOME}
 
 # Prepare required project files
 COPY src ./src
 COPY build.gradle.kts ./
+COPY settings.gradle.kts ./
 
 # Build test runner
-RUN ${GRADLE_HOME}/bin/gradle -i shadowJar
-RUN cp build/libs/autotest-runner.jar .
-
-# List result files
-#RUN rm -r build
-#RUN apk add --no-cache tree
-#RUN tree .
+RUN gradle --no-daemon -i shadowJar \
+    && cp build/libs/autotest-runner.jar .
 
 # === Build runtime image ===
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.5_10-alpine-slim
-ARG WORKDIR="/opt/test-runner/bin"
+FROM gradle:6.8-jdk11
+ARG WORKDIR="/opt/test-runner"
 
+# Copy binary and launcher script
 COPY bin/run.sh ${WORKDIR}/run.sh
-COPY --from=build ${GRADLE_HOME} ${GRADLE_HOME}
-COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}/
+COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}
 
-ENV PATH "${PATH}:${GRADLE_HOME}/bin"
+# Cache Kotlin dependencies
+#COPY cache-warmup/ /tmp/cache-warmup/
+#RUN cd /tmp/cache-warmup/ \
+#    && rm -r .gradle/ build/ \
+#    && gradle --no-daemon test
 
-WORKDIR /opt/test-runner
+WORKDIR $WORKDIR
 
-ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]
+ENTRYPOINT ["sh", "/opt/test-runner/run.sh"]

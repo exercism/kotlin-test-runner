@@ -53,7 +53,7 @@ private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
         logFile.delete()
         ProcessBuilder.Redirect.appendTo(logFile)
     }
-    val process = ProcessBuilder("./gradlew",
+    val process = ProcessBuilder("gradle",
         "--no-daemon",
         "--warning-mode=none",
         "clean", "test"
