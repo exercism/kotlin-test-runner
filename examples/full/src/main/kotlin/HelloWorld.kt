@@ -3,5 +3,5 @@ fun hello(): String {
     //a = 1 // uncomment for compilation error
 
     println("Stdout print")
-    return "Hello, World!1"
+    return "Hello, World!"
 }

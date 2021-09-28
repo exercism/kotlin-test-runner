@@ -55,6 +55,7 @@ private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
     }
     val process = ProcessBuilder("gradle",
         "--no-daemon",
+        "--offline",
         "--warning-mode=none",
         "clean", "test"
     )

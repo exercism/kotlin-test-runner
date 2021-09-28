@@ -1,0 +1,6 @@
+.gradle/
+build/
+gradle/
+.github/
+.appends/
+docs/

@@ -31,7 +31,7 @@ output_dir="${3%/}"
 mkdir -p "${output_dir}"
 
 # Build the Docker image
-docker build --rm -t exercism/test-runner .
+docker build --rm -t exercism/kotlin-test-runner .
 
 # Run the Docker image using the settings mimicking the production environment
 docker run \
@@ -40,4 +40,4 @@ docker run \
     --mount type=bind,src="${input_dir}",dst=/solution \
     --mount type=bind,src="${output_dir}",dst=/output \
     --tmpfs /tmp:exec \
-    exercism/test-runner "${slug}" /solution /output
+    exercism/kotlin-test-runner "${slug}" /solution /output
