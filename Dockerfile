@@ -30,4 +30,7 @@ COPY --from=build /home/builder/autotest-runner.jar ./
 # Copy cached dependencies
 COPY --from=build /home/gradle /home/gradle
 
+# Start Gradle daemon
+RUN gradle -Dorg.gradle.daemon.idleTimeout=360000000
+
 ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]

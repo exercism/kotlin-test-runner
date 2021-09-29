@@ -31,7 +31,7 @@ output_dir="${3%/}"
 mkdir -p "${output_dir}"
 
 # Build the Docker image
-docker build --rm -t exercism/kotlin-test-runner .
+docker build --progress=plain --rm -t exercism/kotlin-test-runner .
 
 # Run the Docker image using the settings mimicking the production environment
 docker run \
