@@ -1,0 +1,7 @@
+.gradle/
+build/
+gradle/
+.github/
+.appends/
+docs/
+bin/run-in-docker.sh

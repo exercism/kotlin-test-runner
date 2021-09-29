@@ -13,21 +13,21 @@ COPY settings.gradle.kts ./
 RUN gradle --no-daemon -i shadowJar \
     && cp build/libs/autotest-runner.jar .
 
+# Ensure exercise dependencies are downloaded
+WORKDIR /opt/exercise
+COPY examples/full .
+RUN gradle build
+
 # === Build runtime image ===
 
 FROM gradle:6.8-jdk11
-ARG WORKDIR="/opt/test-runner"
+WORKDIR /opt/test-runner
 
 # Copy binary and launcher script
-COPY bin/run.sh ${WORKDIR}/run.sh
-COPY --from=build /home/builder/autotest-runner.jar ${WORKDIR}
+COPY bin/run.sh bin/run.sh
+COPY --from=build /home/builder/autotest-runner.jar ./
 
-# Cache Kotlin dependencies
-#COPY cache-warmup/ /tmp/cache-warmup/
-#RUN cd /tmp/cache-warmup/ \
-#    && rm -r .gradle/ build/ \
-#    && gradle --no-daemon test
+# Copy cached dependencies
+COPY --from=build /home/gradle /home/gradle
 
-WORKDIR $WORKDIR
-
-ENTRYPOINT ["sh", "/opt/test-runner/run.sh"]
+ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]
