@@ -5,7 +5,7 @@
     {
       "name": "two plus two is five",
       "status": "fail",
-      "message": "expected: <4> but was: <5>",
+      "message": "expected:<4> but was:<5>",
       "output": ""
     },
     {
