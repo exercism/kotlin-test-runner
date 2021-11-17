@@ -13,3 +13,5 @@ build/
 .kotlintest/
 
 results.json
+
+target

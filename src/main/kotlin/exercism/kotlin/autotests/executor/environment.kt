@@ -31,7 +31,6 @@ private fun setupEnvironment(args: LaunchArguments): Environment {
 
     copyFilesToWorkingDir(args.solutionsDir, env.workingDir)
     cleanupTests(env.workingDir)
-    env.workingDir.resolve("gradlew").setExecutable(true)
 
     env.resultFile.parentFile.mkdirs()
 

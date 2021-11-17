@@ -23,11 +23,6 @@ private fun Document.asTestSuit(): TestSuit {
         skipped = suit["skipped"].value.toInt(),
         failures = suit["failures"].value.toInt(),
         errors = suit["errors"].value.toInt(),
-        timestamp = suit["timestamp"].value,
-        hostname = suit["hostname"].value,
-        time = suit["time"].value,
-        systemOut = suit.elementText("system-out"),
-        systemErr = suit.elementText("system-err"),
         testCases = suit.elements("testcase").map(Element::asTestCase)
     )
 }
@@ -38,12 +33,21 @@ private fun Element.asTestCase(): TestCase {
         className = get("classname").text,
         time = get("time").text,
         isSkipped = element("skipped") != null,
-        failure = element("failure")?.asFailure()
+        failure = element("failure")?.asFailure(),
+        error = element("error")?.asError()
     )
 }
 
 private fun Element.asFailure(): TestCase.Failure {
     return TestCase.Failure(
+        message = get("message").text,
+        type = get("type").text,
+        stackTrace = text
+    )
+}
+
+private fun Element.asError(): TestCase.Error {
+    return TestCase.Error(
         message = get("message").text,
         type = get("type").text,
         stackTrace = text
@@ -56,13 +60,6 @@ data class TestSuit(
     val skipped: Int,
     val failures: Int,
     val errors: Int,
-    val timestamp: String,
-    val hostname: String,
-    val time: String,
-    val systemOut: String,
-    val systemErr: String,
-
-    //val properties
 
     val testCases: List<TestCase>
 )
@@ -72,10 +69,17 @@ data class TestCase(
     val className: String,
     val time: String,
     val isSkipped: Boolean,
-    val failure: Failure?
+    val failure: Failure?,
+    val error: Error?
 ) {
 
     data class Failure(
+        val message: String,
+        val type: String,
+        val stackTrace: String
+    )
+
+    data class Error(
         val message: String,
         val type: String,
         val stackTrace: String

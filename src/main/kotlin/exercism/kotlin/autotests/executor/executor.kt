@@ -4,7 +4,7 @@ import utils.junit.parseJUnit4Results
 import java.io.File
 
 /**
- * Build sources, run tests with `./gradlew` and parse JUnit xml-report.
+ * Build sources, run tests with `maven` and parse JUnit xml-report.
  */
 fun executor(env: Environment): ExecutionResult {
     val buildResult = executeBuild(env.workingDir)
@@ -13,10 +13,10 @@ fun executor(env: Environment): ExecutionResult {
 }
 
 /**
- * Run `./gradlew test` and write gradle logs to
+ * Run `mvn test` and write maven logs to
  * external file (see implementation for details).
  *
- * Gradle logs will also be printed to stdout between special markers:
+ * Maven logs will also be printed to stdout between special markers:
  * ```
  * === Log START ===
  * ...
@@ -24,12 +24,12 @@ fun executor(env: Environment): ExecutionResult {
  * ```
  */
 private fun executeBuild(workingDir: File): BuildResult {
-    println("Running gradle")
+    println("Running Maven")
 
     val logFile = workingDir.resolve("__out.log")
-    val exitCode = runGradleProcess(workingDir, logFile)
+    val exitCode = runMavenProcess(workingDir, logFile)
 
-    println("Gradle finished with exit code $exitCode")
+    println("Maven finished with exit code $exitCode")
     println("=== Log START ===")
     println(logFile.readText())
     println("=== Log END ===")
@@ -43,21 +43,22 @@ private fun executeBuild(workingDir: File): BuildResult {
 typealias ExitCode = Int
 
 /**
- * Run `./gradlew test` from [workingDir] with some parameters.
+ * Run `mvn test` from [workingDir] with some parameters.
  * Process `stdout` and `stderr` are written to [logFile].
  *
- * @return exit code of gradle build process.
+ * @return exit code of Maven build process.
  */
-private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
+private fun runMavenProcess(workingDir: File, logFile: File): ExitCode {
     val ioRedirect = run {
         logFile.delete()
         ProcessBuilder.Redirect.appendTo(logFile)
     }
-    val process = ProcessBuilder("gradle",
-        "--no-daemon",
+    val process = ProcessBuilder("mvn",
+        "test",
         "--offline",
-        "--warning-mode=none",
-        "clean", "test"
+        "--legacy-local-repository",
+        "--batch-mode",
+        "--non-recursive"
     )
         .directory(workingDir)
         .redirectOutput(ioRedirect)
@@ -70,11 +71,11 @@ private fun runGradleProcess(workingDir: File, logFile: File): ExitCode {
 /**
  * Parse JUnit4 xml-report and build [ExecutionResult].
  *
- * If compilation was failed - error is cut-out from gradle logs,
+ * If compilation was failed - error is cut-out from maven logs,
  * cleared from full path (`src/main/kotlin/Foo.kt` only left) and used as an error message.
  */
 private fun buildExecutionResult(workingDir: File, buildResult: BuildResult): ExecutionResult {
-    val testsDir = workingDir.resolve("build/test-results/test/")
+    val testsDir = workingDir.resolve("target/surefire-reports")
 
     if (buildResult.failed && !testsDir.exists()) { // probably compilation error
         fun String.removeWorkingDirPath() =
@@ -82,12 +83,13 @@ private fun buildExecutionResult(workingDir: File, buildResult: BuildResult): Ex
 
         // FIXME parsing logs is not a very good idea
         //       but it seems that there is no easy way to get
-        //       build machine-readable build summary from gradle now
+        //       build machine-readable build summary from maven now
         val message = buildResult.logFile.readLines()
             .asSequence()
-            .dropWhile { !it.contains("compileKotlin FAILED") }
+            .dropWhile { !it.contains("BUILD FAILURE") }
+            .dropWhile { !it.startsWith("[ERROR]") }
             .drop(1)
-            .takeWhile { !it.startsWith("FAILURE") }
+            .takeWhile { !it.startsWith("[ERROR] -> [Help 1]") }
             .map(String::removeWorkingDirPath)
             .joinToString("\n")
             .trim()
