@@ -8,7 +8,7 @@ import exercism.kotlin.autotests.runner.report.exportReportToFile
 
 /**
  * Kotlin auto-test runner tool.
- * It uses provided `gradlew` to execute tests, parses JUnit report and exports data to `results.json`.
+ * It uses provided `Maven` to execute tests, parses JUnit report and exports data to `results.json`.
  *
  * [Tool interface specification in exercism repo](https://github.com/exercism/automated-tests/blob/master/docs/interface.md)
  *
@@ -21,7 +21,7 @@ import exercism.kotlin.autotests.runner.report.exportReportToFile
  *
  * After execution `results.json` file will be created in output folder.
  * Original content of solutions directory will not be changed
- * but build files will be created during compilation (can be cleared with `./gradlew clean`)
+ * but build files will be created during compilation (can be cleared with `mvn clean`)
  */
 fun main(arguments: Array<String>) {
     val args = LaunchArguments.parseAndValidate(arguments)

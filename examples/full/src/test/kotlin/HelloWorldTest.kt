@@ -1,6 +1,6 @@
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.Ignore
+import kotlin.test.*
 
 class HelloWorldTest {
 
@@ -10,7 +10,7 @@ class HelloWorldTest {
     }
 
     @Test
-    @Disabled
+    @Ignore
     fun `passing test`() {
         println("I'm always passing! <3")
     }

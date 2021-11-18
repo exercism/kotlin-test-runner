@@ -57,4 +57,4 @@ class ExporterKtTest : StringSpec({
 })
 
 private fun createTestSuit(name: String, testNames: List<String>) =
-    TestSuit(name, 0, 0, 0, 0, "", "", "", "", "", testNames.map { TestCase(it, "", "", false, null) })
+    TestSuit(name, 0, 0, 0, 0, testNames.map { TestCase(it, "", "", false, null, null) })
