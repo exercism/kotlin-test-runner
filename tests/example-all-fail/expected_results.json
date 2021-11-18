@@ -1,0 +1,12 @@
+{
+  "status": "fail",
+  "message": "",
+  "tests": [
+    {
+      "name": "not leap | not divisible by 4",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    }
+  ]
+}
