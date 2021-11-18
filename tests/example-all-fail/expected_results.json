@@ -1,0 +1,60 @@
+{
+  "status": "fail",
+  "message": "",
+  "tests": [
+    {
+      "name": "not leap | divisible by 200, not divisible by 400",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    },
+    {
+      "name": "not leap | divisible by 100 but not by 3",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    },
+    {
+      "name": "not leap | divisible by 2, not divisible by 4",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    },
+    {
+      "name": "leap | divisible by 4, not divisible by 100",
+      "status": "fail",
+      "message": "Expected value to be true.",
+      "output": ""
+    },
+    {
+      "name": "not leap | not divisible by 4",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    },
+    {
+      "name": "not leap | divisible by 100, not divisible by 400",
+      "status": "fail",
+      "message": "Expected value to be false.",
+      "output": ""
+    },
+    {
+      "name": "leap | divisible by 400 but not by 125",
+      "status": "fail",
+      "message": "Expected value to be true.",
+      "output": ""
+    },
+    {
+      "name": "leap | divisible by 400",
+      "status": "fail",
+      "message": "Expected value to be true.",
+      "output": ""
+    },
+    {
+      "name": "leap | divisible by 4 and 5",
+      "status": "fail",
+      "message": "Expected value to be true.",
+      "output": ""
+    }
+  ]
+}

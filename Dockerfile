@@ -27,7 +27,7 @@ FROM maven:3.8.3-jdk-11
 WORKDIR /opt/test-runner
 
 # Copy binary and launcher script
-COPY bin/run.sh bin/run.sh
+COPY bin/ bin/
 COPY --from=build /home/builder/autotest-runner.jar ./
 
 # Copy cached dependencies

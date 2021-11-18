@@ -15,3 +15,5 @@ build/
 results.json
 
 target
+
+*.bak
