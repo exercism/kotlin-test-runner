@@ -9,3 +9,4 @@ bin/run-tests-in-docker.sh
 tests/
 .git
 .gitignore
+.gitattributes
