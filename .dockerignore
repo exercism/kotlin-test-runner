@@ -11,3 +11,4 @@ tests/
 .gitignore
 .gitattributes
 .dockerignore
+Dockerfile
