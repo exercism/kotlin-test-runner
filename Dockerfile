@@ -13,7 +13,7 @@ COPY settings.gradle.kts ./
 RUN gradle --no-daemon -i shadowJar \
     && cp build/libs/autotest-runner.jar .
 
-FROM maven:3.8.3-jdk-11 AS cache
+FROM maven:3.8.6-jdk-11-slim AS cache
 
 # Ensure exercise dependencies are downloaded
 WORKDIR /opt/exercise
@@ -23,7 +23,7 @@ RUN mvn test dependency:go-offline -DexcludeReactor=false
 
 # === Build runtime image ===
 
-FROM maven:3.8.3-jdk-11
+FROM maven:3.8.6-jdk-11-slim
 WORKDIR /opt/test-runner
 
 # Copy binary and launcher script
