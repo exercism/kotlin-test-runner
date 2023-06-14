@@ -2,13 +2,13 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     kotlin("jvm") version "1.8.22"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
     maven("https://jitpack.io")
 }
 
@@ -34,7 +34,7 @@ tasks.withType<Test> {
 }
 
 application {
-    mainClassName = "exercism.kotlin.autotests.runner.MainKt"
+    mainClass.set("exercism.kotlin.autotests.runner.MainKt")
 }
 
 tasks.withType<ShadowJar> {
