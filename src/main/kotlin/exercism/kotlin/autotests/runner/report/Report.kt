@@ -2,6 +2,7 @@ package exercism.kotlin.autotests.runner.report
 
 /** Report summary */
 data class Report(
+    val version: Int,
     val status: Status,
     val message: String?,
     val tests: List<TestEntry>
