@@ -17,6 +17,7 @@ fun ExecutionResult.exportReportToFile(file: File) {
 
 fun ExecutionResult.asReport(): Report =
     Report(
+        version = 2,
         status = parseStatus(),
         message = parseMessage(),
         tests = parseTestEntries()

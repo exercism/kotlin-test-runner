@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "status": "error",
   "message": "[ERROR] src/main/kotlin/Leap.kt:[1,6] Expecting a top level declaration\n[ERROR] src/main/kotlin/Leap.kt:[1,14] Expecting a top level declaration\n[ERROR] src/main/kotlin/Leap.kt:[1,18] Expected annotation identifier after '@'\n[ERROR] src/main/kotlin/Leap.kt:[1,19] Expecting a top level declaration\n[ERROR] src/main/kotlin/Leap.kt:[1,21] Expecting a top level declaration\n[ERROR] src/main/kotlin/Leap.kt:[1,22] Expecting '}'",
   "tests": []
