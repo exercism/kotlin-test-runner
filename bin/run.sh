@@ -5,7 +5,8 @@ cp /root/pom.xml $2
 
 # Temporarily un-ignore tests
 find $2/src/test/kotlin -type f -name '*Test.kt' -execdir cp {} {}.bak \;
-find $2/src/test/kotlin -type f -name '*Test.kt' -exec sed -i "s/@Ignore(.*)//g;s/@Ignore//g;" {} \;
+find $2/src/test/kotlin -type f -name '*Test.kt' -exec sed -i "s/@Ignore(.*)//g;s/@Ignore//g;" {} \; # for JUnit 4
+find $2/src/test/kotlin -type f -name '*Test.kt' -exec sed -i "s/@Disabled(.*)//g;s/@Disabled//g;" {} \; # for JUnit 5
 
 # See Dockerfile for details
 java -jar /opt/test-runner/autotest-runner.jar $1 $2 $3
