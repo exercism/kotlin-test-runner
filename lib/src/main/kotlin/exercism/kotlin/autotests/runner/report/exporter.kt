@@ -55,12 +55,17 @@ private fun List<TestSuit>.asReportTestEntries(): List<Report.TestEntry> =
 private fun TestCase.asReportTestEntry(): Report.TestEntry =
     Report.TestEntry(
         name = name,
-        status = if (failure == null) Report.Status.Pass else Report.Status.Fail,
+        status = when {
+            error != null -> Report.Status.Error
+            failure != null -> Report.Status.Fail
+            else -> Report.Status.Pass
+        },
         message = getMessage(),
         output = "" // TODO output is available only for test suit in JUnit4
     )
 
 private fun TestCase.getMessage(): String {
+    if (error != null) return error.message
     if (failure == null) return ""
 
     val rawMessage = failure.message
