@@ -5,9 +5,7 @@ FROM gradle:8.4.0-jdk11 AS build
 WORKDIR /home/builder
 
 # Prepare required project files
-COPY src ./src
-COPY build.gradle.kts ./
-COPY settings.gradle.kts ./
+COPY lib/ ./
 
 # Build test runner
 RUN gradle --no-daemon -i shadowJar \
