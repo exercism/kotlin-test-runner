@@ -56,7 +56,6 @@ private fun runMavenProcess(workingDir: File, logFile: File): ExitCode {
     val process = ProcessBuilder("mvn",
         "test",
         "--offline",
-        "--legacy-local-repository",
         "--batch-mode",
         "--non-recursive"
     )

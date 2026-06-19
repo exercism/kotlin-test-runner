@@ -1,12 +1,13 @@
 package exercism.kotlin.autotests.runner.report
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 class SerializationKtTest : StringSpec({
 
     "passed empty report" {
         val report = Report(
+            version = 1,
             status = Report.Status.Pass,
             message = null,
             tests = emptyList()
@@ -22,6 +23,7 @@ class SerializationKtTest : StringSpec({
 
     "failed empty report" {
         val report = Report(
+            version = 1,
             status = Report.Status.Fail,
             message = null,
             tests = emptyList()
@@ -37,6 +39,7 @@ class SerializationKtTest : StringSpec({
 
     "crashed empty report" {
         val report = Report(
+            version = 2,
             status = Report.Status.Error,
             message = null,
             tests = emptyList()

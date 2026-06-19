@@ -1,8 +1,8 @@
 package exercism.kotlin.autotests.runner.report
 
 import exercism.kotlin.autotests.executor.ExecutionResult
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import utils.junit.TestCase
 import utils.junit.TestSuit
 

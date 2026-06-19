@@ -1,5 +1,6 @@
 {
+  "version": 2,
   "status": "error",
-  "message": "[ERROR] /privatesrc/main/kotlin/Ex2.kt:[2,5] Unresolved reference: ooops",
+  "message": "[ERROR] file://privatesrc/main/kotlin/Ex2.kt:[2,5] Unresolved reference: ooops",
   "tests": []
 }
