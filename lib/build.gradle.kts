@@ -25,6 +25,9 @@ dependencies {
 
     implementation("org.dom4j:dom4j:2.2.0")
 
+    // The image puts the compiler on the classpath at run time (see bin/run.sh).
+    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.4.0")
+
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.0")
     testImplementation("io.kotest:kotest-assertions-core:${version.kotest}")
     testImplementation("io.kotest:kotest-framework-engine:${version.kotest}")
