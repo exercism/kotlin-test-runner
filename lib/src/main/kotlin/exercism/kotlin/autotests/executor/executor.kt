@@ -4,9 +4,24 @@ import utils.junit.parseJUnit4Results
 import java.io.File
 
 /**
- * Build sources, run tests with `maven` and parse JUnit xml-report.
+ * Compile and run the tests without Maven when possible (see [fastExecutor]), and otherwise with Maven.
  */
 fun executor(env: Environment): ExecutionResult {
+    val result = try {
+        fastExecutor(env)
+    } catch (e: Throwable) {
+        println("Running without Maven failed, falling back to Maven: $e")
+        null
+    }
+    return result ?: mavenExecutor(env)
+}
+
+/**
+ * Build sources, run tests with `maven` and parse JUnit xml-report.
+ */
+fun mavenExecutor(env: Environment): ExecutionResult {
+    // Remove anything the fast path compiled, so Maven starts from the same state as before.
+    env.workingDir.resolve("target").deleteRecursively()
     val buildResult = executeBuild(env.workingDir)
 
     return buildExecutionResult(env.workingDir, buildResult)
