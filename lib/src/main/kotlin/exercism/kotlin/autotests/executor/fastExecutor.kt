@@ -3,9 +3,7 @@ package exercism.kotlin.autotests.executor
 import exercism.kotlin.autotests.runner.report.exportReportToFile
 import utils.junit.TestCase
 import utils.junit.TestSuit
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.PrintStream
 import java.net.URLClassLoader
 
 /**
@@ -15,8 +13,8 @@ import java.net.URLClassLoader
  * Surefire. Here the Kotlin compiler and the JUnit Platform run in this JVM with the arguments and classpaths
  * Maven would use, which were recorded at image build (see the Dockerfile).
  *
- * Returns null when the result could differ from Maven's: an unusual project layout, a compile error
- * (Maven's error message is kept exactly), or tests that Surefire would report in a special way.
+ * Returns null when the result could differ from Maven's: an unusual project layout, unusual compiler
+ * output, or tests that Surefire would report in a special way.
  * The caller then runs Maven as before.
  */
 fun fastExecutor(env: Environment): ExecutionResult? {
@@ -28,14 +26,19 @@ fun fastExecutor(env: Environment): ExecutionResult? {
 
     val classes = workingDir.resolve("target/classes")
     val testClasses = workingDir.resolve("target/test-classes")
-    val compiled =
-        compile(config, workingDir.resolve("src/main/kotlin"), classes, config.mainClasspath) &&
-            compile(
-                config, workingDir.resolve("src/test/kotlin"), testClasses,
+    val compiled = compileKotlin(workingDir.resolve("src/main/kotlin"), classes, config.mainClasspath)
+        .then {
+            compileKotlin(
+                workingDir.resolve("src/test/kotlin"), testClasses,
                 listOf(classes.path) + config.testClasspath,
                 "-Xfriend-paths=${classes.path}"
             )
-    if (!compiled) return null.also { println("Compilation failed, falling back to Maven") }
+        }
+    when (compiled) {
+        is CompileResult.Failed -> return ExecutionResult.CompilationFailed(compiled.mavenMessage(workingDir))
+        CompileResult.Unsupported -> return null.also { println("Unusual compiler output, falling back to Maven") }
+        CompileResult.Ok -> {}
+    }
 
     val testClass = findTestClass(testClasses) ?: return null.also {
         println("The tests are not in exactly one test class, falling back to Maven")
@@ -105,34 +108,6 @@ private fun hasPlainLayout(workingDir: File): Boolean {
     if (files.any { it.extension == "java" || it.extension == "kts" }) return false
     fun hasKotlin(dir: File) = files.any { it.extension == "kt" && it.startsWith(dir) }
     return hasKotlin(main) && hasKotlin(test)
-}
-
-/** Run the Kotlin compiler with the same arguments as the kotlin-maven-plugin. */
-private fun compile(
-    config: FastPathConfig,
-    sourceDir: File,
-    outputDir: File,
-    classpath: List<String>,
-    vararg extraArgs: String
-): Boolean {
-    val sources = sourceDir.walk().filter { it.isFile && it.extension == "kt" }.map { it.path }.toList()
-    val args = listOf(
-        "-classpath", classpath.joinToString(File.pathSeparator),
-        "-d", outputDir.path,
-        *extraArgs,
-        "-jvm-target", "1.8",
-        "-module-name", "exercise",
-        "-no-stdlib"
-    ) + sources
-
-    val start = System.currentTimeMillis()
-    val output = ByteArrayOutputStream()
-    val compiler = Class.forName("org.jetbrains.kotlin.cli.jvm.K2JVMCompiler").getDeclaredConstructor().newInstance()
-    val exec = compiler.javaClass.getMethod("exec", PrintStream::class.java, Array<String>::class.java)
-    val exitCode = PrintStream(output, true, "UTF-8").use { exec.invoke(compiler, it, args.toTypedArray()) }
-    print(output.toString("UTF-8"))
-    println("Compiled $sourceDir in ${System.currentTimeMillis() - start} ms: $exitCode")
-    return exitCode.toString() == "OK"
 }
 
 /**
