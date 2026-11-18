@@ -57,7 +57,10 @@ private fun runMavenProcess(workingDir: File, logFile: File): ExitCode {
         "test",
         "--offline",
         "--batch-mode",
-        "--non-recursive"
+        "--non-recursive",
+        // Compile inside Maven's JVM. By default the Kotlin plugin starts a separate compiler daemon JVM,
+        // which never gets reused because every run starts a fresh container.
+        "-Dkotlin.compiler.daemon=false"
     )
         .directory(workingDir)
         .redirectOutput(ioRedirect)
