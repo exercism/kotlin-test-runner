@@ -53,4 +53,11 @@ COPY --from=cache /opt/test-runner/fast fast/
 # Copy Maven pom.xml
 COPY --from=cache /opt/exercise/pom.xml /root/pom.xml
 
+# Train the class data sharing archive by running the runner once on a sample exercise.
+COPY examples/full /tmp/training
+RUN JAVA_CDS=-XX:ArchiveClassesAtExit=/opt/test-runner/fast/runner.jsa \
+        sh bin/run.sh hello-world /tmp/training /tmp/training \
+    && grep -q '"status": "pass"' /tmp/training/results.json \
+    && rm -rf /tmp/training /tmp/kotlin-autotest-runnner*
+
 ENTRYPOINT ["sh", "/opt/test-runner/bin/run.sh"]
